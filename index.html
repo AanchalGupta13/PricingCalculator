@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Session</title>
+    <style>
+        #accesscontainer{text-align: center; font-size: 22px;}
+    </style>
 </head>
 <body>
+    <div id="accesscontainer"></div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             createSession();
@@ -58,9 +62,11 @@
 
         function showError(message) {
             console.error(message);
-            document.body.innerHTML = `
+            const container = document.getElementById('accesscontainer');
+            container.innerHTML = `
                 <h3>Access Denied</h3>
                 <p>${message}</p>
+                <button type = "button" onclick = "window.location.href='http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/pricing-calculator'">Click here for login</button>
             `;
         }
     </script>
