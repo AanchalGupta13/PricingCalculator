@@ -154,7 +154,6 @@
         async function verifyUserWithDatabase() {
             const useremail = localStorage.getItem("useremail");
             const provider_user_id = localStorage.getItem("provider_user_id");
-            console.log("useremail & provider_user_id:", useremail, provider_user_id)
             try {
                 const response = await fetch(UNIFIED_API_ENDPOINT, {
                     method: 'POST',
@@ -215,6 +214,7 @@
 
         async function verifysubscriptionWithDatabase() {
             const useremail = localStorage.getItem("useremail");
+            const provider_user_id = localStorage.getItem("provider_user_id");
             try {
                 const response = await fetch(UNIFIED_API_ENDPOINT, {
                     method: 'POST',
@@ -223,7 +223,8 @@
                     },
                     body: JSON.stringify({
                         action: "checkStatus",
-                        email: useremail
+                        email: useremail,
+                        provider_user_id: provider_user_id
                     })
                 });
                 console.log('received response:', response);
@@ -249,7 +250,7 @@
 
         async function checkSubscriptionStatus() {
             const useremail = localStorage.getItem("useremail");
-            const data = await verifysubscriptionWithDatabase(useremail);
+            const data = await verifysubscriptionWithDatabase();
             const isSubscribed = data.isSubscribed
             const subscriptionStatusDiv = document.getElementById('subscriptionStatus');
             const subscribeButtonContainer = document.getElementById('subscribeButtonContainer');
@@ -279,7 +280,7 @@
 
         async function updateUsageCounters() {
             const useremail = localStorage.getItem("useremail");
-            const data = await verifysubscriptionWithDatabase(useremail);
+            const data = await verifysubscriptionWithDatabase();
             
             // Update counters
             document.getElementById("uploadCountDisplay").textContent = data.uploadCount;

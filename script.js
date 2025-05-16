@@ -31,6 +31,7 @@ async function incrementCounter(counterType) {
 // Function to update the display counters
 async function updateUsageCounters() {
     const useremail = localStorage.getItem("useremail");
+    const provider_user_id = localStorage.getItem("provider_user_id");
     try {
         const response = await fetch(UNIFIED_API_ENDPOINT, {
             method: 'POST',
@@ -40,7 +41,8 @@ async function updateUsageCounters() {
             },
             body: JSON.stringify({
                 action: "checkStatus",
-                email: useremail
+                email: useremail,
+                provider_user_id: provider_user_id
             })
         });
 
@@ -95,6 +97,7 @@ let uploadTime = null; // Track exact upload timestamp
 // Upload File to S3
 async function uploadFile() {
     const useremail = localStorage.getItem("useremail");
+    const provider_user_id = localStorage.getItem("provider_user_id");
     
     // First check limits
     const statusResponse = await fetch(UNIFIED_API_ENDPOINT, {
@@ -105,7 +108,8 @@ async function uploadFile() {
         },
         body: JSON.stringify({
             action: "checkStatus",
-            email: useremail
+            email: useremail,
+            provider_user_id: provider_user_id
         })
     });
     

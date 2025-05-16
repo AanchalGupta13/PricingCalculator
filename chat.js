@@ -23,6 +23,7 @@ function clearInput() {
 
 async function sendMessage() {
     const useremail = localStorage.getItem("useremail");
+    const provider_user_id = localStorage.getItem("provider_user_id");
     const userInput = document.getElementById("userInput").value.trim();
     if (!userInput) return;
 
@@ -36,7 +37,8 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 action: "checkStatus",
-                email: useremail
+                email: useremail,
+                provider_user_id: provider_user_id
             })
         });
         
