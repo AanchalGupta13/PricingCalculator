@@ -87,11 +87,6 @@ async function updateUsageCounters() {
     }
 }
 
-// Call it when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    updateUsageCounters();
-});
-
 const s3 = new AWS.S3();
 const BUCKET_NAME = "price--inventory";
 let previousFileList = []; // Store previous file list to track changes
