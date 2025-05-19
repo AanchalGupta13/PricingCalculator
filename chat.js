@@ -28,6 +28,15 @@ async function sendMessage() {
     if (!userInput) return;
 
     try {
+        // Prepare the request payload
+        const payload1 = {
+            action: "checkStatus",
+            email: useremail
+        };
+        // Only add provider_user_id if it exists and is not 'undefined'
+        if (provider_user_id && provider_user_id !== 'undefined') {
+            payload1.provider_user_id = provider_user_id;
+        }
         // First check limits
         const statusResponse = await fetch(UNIFIED_API_ENDPOINT, {
             method: 'POST',
@@ -35,11 +44,7 @@ async function sendMessage() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("token")}`
             },
-            body: JSON.stringify({
-                action: "checkStatus",
-                email: useremail,
-                provider_user_id: provider_user_id
-            })
+            body: JSON.stringify(payload1)
         });
         
         const statusData = await statusResponse.json();
