@@ -327,6 +327,10 @@
             
             // Update subscription status display
             const statusMessage = document.getElementById("statusMessage");
+            if (!statusMessage) {
+                console.warn("Element with ID 'statusMessage' not found.");
+                return;
+            }
             if (data.isSubscribed) {
                 statusMessage.innerHTML = '<div class="premium-badge"><strong>Premium User:</strong> Unlocked Premium Access</div>';
                 } else {
