@@ -155,18 +155,33 @@
             const useremail = localStorage.getItem("useremail");
             const provider_user_id = localStorage.getItem("provider_user_id");
             try {
-                const response = await fetch(UNIFIED_API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`
-                    },
-                    body: JSON.stringify({
-                        action: "verifyUser",
-                        email: useremail,
-                        provider_user_id: provider_user_id
-                    })
-                });
+                let response;
+                if (provider_user_id === 'undefined') {
+                    response = await fetch(UNIFIED_API_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            action: "verifyUser",
+                            email: useremail
+                        })
+                    });
+                } else {
+                    response = await fetch(UNIFIED_API_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            action: "verifyUser",
+                            email: useremail,
+                            provider_user_id: provider_user_id
+                        })
+                    });
+                }
                 console.log('received response:', response);
 
                 if (!response.ok) {
