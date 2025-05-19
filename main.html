@@ -69,6 +69,8 @@
     
     <script>
         const UNIFIED_API_ENDPOINT = 'https://al0pc26yjl.execute-api.ap-south-1.amazonaws.com/prod/payment/verify';
+        const MAX_RETRY_ATTEMPTS = 3;
+        let retryCount = 0;
         // Check subscription status on page load
         document.addEventListener('DOMContentLoaded', async function () {
             // Redirect to index.html if no token is found
@@ -117,7 +119,7 @@
                 console.log(provider_user_id);
 
                 // Verify user against database
-                const isValidUser = await verifyUserWithDatabase();
+                const isValidUser = await verifyUserWithDatabaseWithRetry();
         
                 if (!isValidUser) {
                     alert("User not authorized. Redirecting...");
@@ -149,6 +151,31 @@
                 });
                 window.location.href = "subscribe.html?" + params.toString();
             }
+        }
+
+        async function verifyUserWithDatabaseWithRetry() {
+            while (retryCount < MAX_RETRY_ATTEMPTS) {
+                try {
+                    const result = await verifyUserWithDatabase();
+                    if (result) {
+                        return true;
+                    }
+                    
+                    retryCount++;
+                    if (retryCount < MAX_RETRY_ATTEMPTS) {
+                        console.log(`Verification failed. Retrying (${retryCount})...`);
+                        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 seconds before retry
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${retryCount + 1} failed:`, error);
+                    retryCount++;
+                    if (retryCount >= MAX_RETRY_ATTEMPTS) {
+                        throw error;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+            return false;
         }
 
         async function verifyUserWithDatabase() {
