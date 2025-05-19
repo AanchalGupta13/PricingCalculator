@@ -62,6 +62,10 @@ async function updateUsageCounters() {
             
             // Update subscription status display
             const statusMessage = document.getElementById("statusMessage");
+            if (!statusMessage) {
+                console.warn("Element with ID 'statusMessage' not found.");
+                return;
+            }
             if (data.isSubscribed) {
                 statusMessage.innerHTML = '<div class="premium-badge"><strong>Premium User:</strong> Unlocked Premium Access</div>';
                 if (document.getElementById("remainingCounts")) {
@@ -343,7 +347,7 @@ document.getElementById("fileDropdown").addEventListener("change", function () {
 });
 
 window.onload = function () {
-    updateUsageCounters();
+    // updateUsageCounters();
     uploadedFilename = ""; // Clear on first load
     listFiles();
     setInterval(listFiles, 5000);  // Auto-refresh file list every 5 seconds
