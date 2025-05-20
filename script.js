@@ -223,6 +223,44 @@ function listFiles() {
             lastModified: new Date(file.LastModified)
         }));
 
+        // Check for error files related to our upload
+        const errorFiles = allFiles.filter(f => 
+            f.key.startsWith("Error_") && 
+            f.key.includes(uploadedFilename.replace(/\.[^/.]+$/, "")) // Match base filename
+        ).sort((a, b) => b.lastModified - a.lastModified);
+
+        // If we have an error file and processing was started
+        if (errorFiles.length > 0 && processingStarted) {
+            const latestErrorFile = errorFiles[0];
+            
+            // Fetch and read the error file
+            s3.getObject({
+                Bucket: BUCKET_NAME,
+                Key: latestErrorFile.key
+            }, function(err, data) {
+                if (!err) {
+                    try {
+                        const errorContent = data.Body.toString('utf-8');
+                        const errorData = JSON.parse(errorContent);
+                        const errorMessage = errorData.body || errorData.message || "Processing failed";
+                        
+                        // Show error to user
+                        document.getElementById("uploadStatus").innerText = "Error Processing File";
+                        alert(`Error: ${errorMessage.replace(/"/g, '')}`);
+                        
+                        // Reset processing flags
+                        processingStarted = false;
+                        uploadedFilename = "";
+                        uploadTime = null;
+                    } catch (parseErr) {
+                        console.error("Error parsing error file:", parseErr);
+                    }
+                }
+            });
+            
+            return; // Skip further processing if we found an error
+        }
+
         // Step 1: Try to detect uploadedFilename from latest result file
         if (!uploadedFilename) {
             const resultFiles = allFiles.filter(f => f.key.startsWith("Price_"));
@@ -292,7 +330,9 @@ function listFiles() {
                     processingStarted = false;
                 }, 2000);
             } else {
-                document.getElementById("uploadStatus").innerText = "Processing..."; // Keep showing this until result arrives
+                // Show processing status with elapsed time
+                const elapsedSeconds = Math.floor((new Date() - uploadTime) / 1000);
+                document.getElementById("uploadStatus").innerText = `Processing... (${elapsedSeconds}s)`;
             }
         }        
 
