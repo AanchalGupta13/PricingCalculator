@@ -332,7 +332,7 @@ function listFiles() {
             } else {
                 // Show processing status with elapsed time
                 const elapsedSeconds = Math.floor((new Date() - uploadTime) / 1000);
-                document.getElementById("uploadStatus").innerText = `Processing... (${elapsedSeconds}s)`;
+                document.getElementById("uploadStatus").innerText = `Processing...`;
             }
         }        
 
