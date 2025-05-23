@@ -89,7 +89,7 @@ async function updateUsageCounters() {
     } catch (error) {
         console.error('Error updating usage status:', error);
     }
-}
+} 
 
 const s3 = new AWS.S3();
 const BUCKET_NAME = "price--inventory";
@@ -223,51 +223,13 @@ function listFiles() {
             lastModified: new Date(file.LastModified)
         }));
 
-        // Check for error files related to our upload
-        const errorFiles = allFiles.filter(f => 
-            f.key.startsWith("Error_") && 
-            f.key.includes(uploadedFilename.replace(/\.[^/.]+$/, "")) // Match base filename
-        ).sort((a, b) => b.lastModified - a.lastModified);
-
-        // If we have an error file and processing was started
-        if (errorFiles.length > 0 && processingStarted) {
-            const latestErrorFile = errorFiles[0];
-            
-            // Fetch and read the error file
-            s3.getObject({
-                Bucket: BUCKET_NAME,
-                Key: latestErrorFile.key
-            }, function(err, data) {
-                if (!err) {
-                    try {
-                        const errorContent = data.Body.toString('utf-8');
-                        const errorData = JSON.parse(errorContent);
-                        const errorMessage = errorData.body || errorData.message || "Processing failed";
-                        
-                        // Show error to user
-                        document.getElementById("uploadStatus").innerText = "Error Processing File";
-                        alert(`Error: ${errorMessage.replace(/"/g, '')}`);
-                        
-                        // Reset processing flags
-                        processingStarted = false;
-                        uploadedFilename = "";
-                        uploadTime = null;
-                    } catch (parseErr) {
-                        console.error("Error parsing error file:", parseErr);
-                    }
-                }
-            });
-            
-            return; // Skip further processing if we found an error
-        }
-
         // Step 1: Try to detect uploadedFilename from latest result file
         if (!uploadedFilename) {
-            const resultFiles = allFiles.filter(f => f.key.startsWith("Price_"));
+            const resultFiles = allFiles.filter(f => f.key.startsWith("Price_") || f.key.startsWith("Error_"));
             if (resultFiles.length > 0) {
                 // Get the most recent result file
                 const latestResultFile = resultFiles.sort((a, b) => b.lastModified - a.lastModified)[0];
-                const match = latestResultFile.key.match(/^Price_(.+)_\d{8}_\d{6}\.csv$/);
+                const match = latestResultFile.key.match(/^(?:Price_|Error_)(.+)_\d{8}_\d{6}\.(?:csv|json)$/i);
                 if (match && match[1]) {
                     uploadedFilename = match[1] + ".xlsx"; // or .csv depending on your format
                 }
@@ -279,7 +241,8 @@ function listFiles() {
         // Step 2: Get latest result file for this upload
         const resultFilesForThisUpload = allFiles
             .filter(f =>
-                f.key.startsWith(`Price_${originalNameWithoutExt}_`) &&
+                (f.key.startsWith(`Price_${originalNameWithoutExt}_`) ||
+                f.key.startsWith(`Error_${originalNameWithoutExt}_`)) &&
                 (!uploadTime || f.lastModified >= uploadTime)
             )
             .sort((a, b) => b.lastModified - a.lastModified);
@@ -324,15 +287,26 @@ function listFiles() {
 
         if (processingStarted) {
             if (latestResultFile) {
-                document.getElementById("uploadStatus").innerText = "Processing Complete!";
-                setTimeout(() => {
-                    document.getElementById("uploadStatus").innerText = "Now you can download your file from the dropdown";
+                const isErrorFile = latestResultFile.key.startsWith("Error_");
+                if (isErrorFile) {
+                    document.getElementById("uploadStatus").innerText = "Processing Failed!";
+                    alert("❌ Failed to fetch the server configurations \nPlease check the file and try again.");
+                    document.getElementById("fileDropdown").options.length = 0;
+                    // 🛠️ Reset state to prevent reprocessing same failed file
+                    uploadedFilename = null;
+                    uploadTime = null;
+                    previousFileList = []; // Optional: clear tracked files too
                     processingStarted = false;
-                }, 2000);
+                    return;
+                } else {
+                    document.getElementById("uploadStatus").innerText = "Processing Complete!";
+                    setTimeout(() => {
+                        document.getElementById("uploadStatus").innerText = "Now you can download your file from the dropdown";
+                    }, 2000);
+                }
+                processingStarted = false;
             } else {
-                // Show processing status with elapsed time
-                const elapsedSeconds = Math.floor((new Date() - uploadTime) / 1000);
-                document.getElementById("uploadStatus").innerText = `Processing...`;
+                document.getElementById("uploadStatus").innerText = "Processing...";  // Keep showing this until result arrives
             }
         }        
 
