@@ -34,7 +34,7 @@ h1 {
     padding-top: 30px;
     padding-bottom: 30px;
     font-size: 2.5em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
 }
 
 .container {
@@ -369,6 +369,7 @@ padding-bottom: 10px;
 }
 
 .subscription-container h1 {
+    text-shadow: none;
     color: #333;
     margin-bottom: 0.5rem;
 }
@@ -445,6 +446,7 @@ padding-bottom: 10px;
 
 .success-message h1 {
     color: #4CAF50;
+    text-shadow: none;
 }
 
 .cancel-message h1 {
