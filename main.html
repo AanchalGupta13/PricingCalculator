@@ -110,7 +110,12 @@
                 const useremail = decodedPayload.email;
                 const provider_user_id = decodedPayload.sub;
 
-                localStorage.setItem("username", username);
+                // Set default username if it's undefined or 'undefined'
+                if (username === 'undefined') {
+                    username = 'User'; // Default value
+                }
+                // Always store the values after validation
+                localStorage.setItem("username", username || 'User'); 
                 localStorage.setItem("useremail", useremail);
                 localStorage.setItem("provider_user_id", provider_user_id);
 
