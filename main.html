@@ -73,6 +73,20 @@
         let retryCount = 0;
         // Check subscription status on page load
         document.addEventListener('DOMContentLoaded', async function () {
+            // Check URL parameters first
+            const urlParams = new URLSearchParams(window.location.search);
+            let urlEmail = urlParams.get('email');
+            if (urlEmail) {
+                localStorage.setItem("useremail", urlEmail);
+                // Optional: Clean URL without reloading
+                if (window.history.replaceState) {
+                    const cleanUrl = window.location.pathname;
+                    window.history.replaceState({}, document.title, cleanUrl);
+                }
+            }
+            console.log(localStorage);
+            const storedEmail = localStorage.getItem("useremail");
+            console.log("Page loaded - useremail:", storedEmail);
             // Redirect to index.html if no token is found
             let token = localStorage.getItem("token");
             if (!token || token.trim() === "") {
@@ -100,6 +114,15 @@
             const base64Url = parts[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             const paddedBase64 = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+
+            // AFTER token processing, verify email persistence
+            const finalEmail = localStorage.getItem('useremail');
+            console.log('Final email check:', finalEmail);
+            
+            if (!finalEmail && urlEmail) {
+                // Fallback: If email was lost, restore from URL value
+                localStorage.setItem('useremail', urlEmail);
+            }
             
             // Decode and parse
             const decodedPayload = JSON.parse(atob(paddedBase64));
@@ -116,7 +139,9 @@
                 }
                 // Always store the values after validation
                 localStorage.setItem("username", username || 'User'); 
-                localStorage.setItem("useremail", useremail);
+                if (decodedPayload.email && !localStorage.getItem('useremail')) {
+                    localStorage.setItem('useremail', decodedPayload.email);
+                }
                 localStorage.setItem("provider_user_id", provider_user_id);
 
                 console.log(username);
@@ -189,9 +214,12 @@
             try {
                 // Prepare the request payload
                 const payload = {
-                    action: "verifyUser",
-                    email: useremail
+                    action: "verifyUser"
                 };
+                // Only add email if it's not null
+                if (useremail) {
+                    payload.email = useremail;
+                }
                 // Only add provider_user_id if it exists and is not 'undefined'
                 if (provider_user_id && provider_user_id !== 'undefined') {
                     payload.provider_user_id = provider_user_id;
@@ -255,9 +283,12 @@
             try {
                 // Prepare the request payload
                 const payload = {
-                    action: "checkStatus",
-                    email: useremail
+                    action: "checkStatus"
                 };
+                // Only add email if it's not null
+                if (useremail) {
+                    payload.email = useremail;
+                }
                 // Only add provider_user_id if it exists and is not 'undefined'
                 if (provider_user_id && provider_user_id !== 'undefined') {
                     payload.provider_user_id = provider_user_id;
@@ -349,12 +380,14 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             updateUsageCounters();
-        });
+            });
 
         function logout() {
             // Clear all stored data
             localStorage.removeItem("token");
             localStorage.removeItem("username");
+            localStorage.removeItem("url_email_backup");	
+            localStorage.removeItem("useremail");
             localStorage.removeItem("scrollPosition");
             localStorage.removeItem("storedFiles");
             

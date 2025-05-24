@@ -21,21 +21,24 @@ function clearInput() {
     document.getElementById("userInput").value = "";
 }
 
+const provider_user_id = localStorage.getItem("provider_user_id");
 async function sendMessage() {
     const useremail = localStorage.getItem("useremail");
-    const provider_user_id = localStorage.getItem("provider_user_id");
     const userInput = document.getElementById("userInput").value.trim();
     if (!userInput) return;
 
     try {
         // Prepare the request payload
-        const payload1 = {
-            action: "checkStatus",
-            email: useremail
+        const statusPayload = {
+            action: "checkStatus"
         };
+        // Only add email if it's not null
+        if (useremail) {
+            statusPayload.email = useremail;
+        }
         // Only add provider_user_id if it exists and is not 'undefined'
-        if (provider_user_id && provider_user_id !== 'undefined') {
-            payload1.provider_user_id = provider_user_id;
+        if (localStorage.getItem("provider_user_id") && localStorage.getItem("provider_user_id") !== 'undefined') {
+            statusPayload.provider_user_id = localStorage.getItem("provider_user_id");
         }
         // First check limits
         const statusResponse = await fetch(UNIFIED_API_ENDPOINT, {
@@ -44,7 +47,7 @@ async function sendMessage() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("token")}`
             },
-            body: JSON.stringify(payload1)
+            body: JSON.stringify(statusPayload)
         });
         
         const statusData = await statusResponse.json();
@@ -68,17 +71,24 @@ async function sendMessage() {
         messagesDiv.innerHTML += `<div class="user-message">👤 <b>You:</b> ${userInput}</div>`;
 
         // Increment counter
+        const provider_user_id = localStorage.getItem("provider_user_id");
+        // Prepare the request payload
+        const payload2 = {
+            action: "incrementCounter",
+            email: useremail,
+            counterType: "queryCount"
+        };
+        // Only add provider_user_id if it exists and is not 'undefined'
+        if (localStorage.getItem("provider_user_id") && localStorage.getItem("provider_user_id") !== 'undefined') {
+            payload2.provider_user_id = localStorage.getItem("provider_user_id");
+        }
         const counterResponse = await fetch(UNIFIED_API_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("token")}`
             },
-            body: JSON.stringify({
-                action: "incrementCounter",
-                email: useremail,
-                counterType: "queryCount"
-            })
+            body: JSON.stringify(payload2)
         });
         
         const counterData = await counterResponse.json();

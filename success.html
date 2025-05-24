@@ -20,10 +20,19 @@
     </div>
     
     <script>
-        // Auto-redirect after 10 seconds
+        // Get email from localStorage
+        const email = localStorage.getItem("useremail");
+        
+        // Auto-redirect with email in URL after 10 seconds
         setTimeout(() => {
-            window.location.href = "main.html";
+            window.location.href = `main.html?email=${encodeURIComponent(email)}`;
         }, 10000);
+        
+        // Update button click handler
+        document.querySelector('.redirect-button').onclick = function() {
+            window.location.href = `main.html?email=${encodeURIComponent(email)}`;
+        };
+    </script>
     </script>
 </body>
 </html>

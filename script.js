@@ -5,17 +5,26 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
 
 async function incrementCounter(counterType) {
     const useremail = localStorage.getItem("useremail");
+    const provider_user_id = localStorage.getItem("provider_user_id");
+    const token = localStorage.getItem("token");
     try {
+        // Prepare the request payload
+        const payload = {
+            action: "incrementCounter",
+            email: useremail,
+            counterType: counterType
+        };
+        // Only add provider_user_id if it exists and is not 'undefined'
+        if (provider_user_id && provider_user_id !== 'undefined') {
+            payload.provider_user_id = provider_user_id;
+        }
         const response = await fetch(UNIFIED_API_ENDPOINT, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
             },
-            body: JSON.stringify({
-                action: "incrementCounter",
-                email: useremail,
-                counterType: counterType
-            })
+            body: JSON.stringify(payload)
         });
         if (!response.ok) {
             throw new Error('Failed to increment counter');
@@ -35,9 +44,12 @@ async function updateUsageCounters() {
     try {
         // Prepare the request payload
         const payload = {
-            action: "checkStatus",
-            email: useremail
+            action: "checkStatus"
         };
+        // Only add email if it's not null
+        if (useremail) {
+            payload.email = useremail;
+        }
         // Only add provider_user_id if it exists and is not 'undefined'
         if (provider_user_id && provider_user_id !== 'undefined') {
             payload.provider_user_id = provider_user_id;
@@ -105,9 +117,12 @@ async function uploadFile() {
 
     // Prepare the request payload
     const payload = {
-        action: "checkStatus",
-        email: useremail
+        action: "checkStatus"
     };
+    // Only add email if it's not null
+    if (useremail) {
+        payload.email = useremail;
+    }
     // Only add provider_user_id if it exists and is not 'undefined'
     if (provider_user_id && provider_user_id !== 'undefined') {
         payload.provider_user_id = provider_user_id;

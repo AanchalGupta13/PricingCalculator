@@ -32,6 +32,8 @@
         </form>
     </div>
 
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <script>
         // Load user data when page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -73,8 +75,10 @@
                 return;
             }
 
-            // Update localStorage with the new valid email
-            localStorage.setItem("useremail", email);
+            console.log("Before storage - email:", email); // Debug what's being stored
+            localStorage.setItem("useremail", email);  // Update localStorage with the new valid email
+            sessionStorage.setItem('useremail', email);
+            console.log("After storage - retrieved:", localStorage.getItem("useremail")); // Debug what was stored
 
             // If all validations pass, proceed to payment
             subscribeNow(name, email, phone);
@@ -169,21 +173,25 @@
 
         async function processPayment(paymentData) {
             try {
-                console.log("Sending payment data:", paymentData);
+                const payload = {
+                    action: "processPayment",
+                    paymentId: paymentData.paymentId,
+                    name: paymentData.name,
+                    email: paymentData.email,
+                    phone: paymentData.phone,
+                    appId: paymentData.appId
+                };
+                // Only add provider_user_id if it exists and is not 'undefined'
+                if (paymentData.provider_user_id && paymentData.provider_user_id !== 'undefined') {
+                    payload.provider_user_id = paymentData.provider_user_id;
+                }
+                console.log("Sending payment data:", payload);
                 const response = await fetch('https://al0pc26yjl.execute-api.ap-south-1.amazonaws.com/prod/payment/verify', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        action: "processPayment",
-                        paymentId: paymentData.paymentId,
-                        name: paymentData.name,
-                        email: paymentData.email,
-                        phone: paymentData.phone,
-                        appId: paymentData.appId,
-                        provider_user_id: paymentData.provider_user_id
-                    })
+                    body: JSON.stringify(payload)
                 });
                 console.log("response status:",response.status);
                 console.log("response: ", response);
@@ -209,7 +217,5 @@
             }
         }
     </script>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
 </html>
