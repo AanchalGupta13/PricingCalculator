@@ -77,7 +77,6 @@
 
             console.log("Before storage - email:", email); // Debug what's being stored
             localStorage.setItem("useremail", email);  // Update localStorage with the new valid email
-            sessionStorage.setItem('useremail', email);
             console.log("After storage - retrieved:", localStorage.getItem("useremail")); // Debug what was stored
 
             // If all validations pass, proceed to payment

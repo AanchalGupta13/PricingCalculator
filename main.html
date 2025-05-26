@@ -75,17 +75,21 @@
         document.addEventListener('DOMContentLoaded', async function () {
             // Check URL parameters first
             const urlParams = new URLSearchParams(window.location.search);
-            let urlEmail = urlParams.get('email');
-            if (urlEmail) {
-                localStorage.setItem("useremail", urlEmail);
-                // Optional: Clean URL without reloading
-                if (window.history.replaceState) {
-                    const cleanUrl = window.location.pathname;
-                    window.history.replaceState({}, document.title, cleanUrl);
+            const storedEmail = localStorage.getItem("useremail");
+            if (!storedEmail) {
+                console.log("storedEmail is Empty");
+            }
+            else if (storedEmail === 'undefined') {
+                let urlEmail = urlParams.get('email');
+                if (urlEmail) {
+                    localStorage.setItem("useremail", urlEmail);
+                    // Optional: Clean URL without reloading
+                    if (window.history.replaceState) {
+                        const cleanUrl = window.location.pathname;
+                        window.history.replaceState({}, document.title, cleanUrl);
+                    }
                 }
             }
-            console.log(localStorage);
-            const storedEmail = localStorage.getItem("useremail");
             console.log("Page loaded - useremail:", storedEmail);
             // Redirect to index.html if no token is found
             let token = localStorage.getItem("token");
@@ -114,12 +118,8 @@
             const base64Url = parts[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             const paddedBase64 = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
-
-            // AFTER token processing, verify email persistence
-            const finalEmail = localStorage.getItem('useremail');
-            console.log('Final email check:', finalEmail);
             
-            if (!finalEmail && urlEmail) {
+            if (storedEmail === 'undefined' && urlEmail) {
                 // Fallback: If email was lost, restore from URL value
                 localStorage.setItem('useremail', urlEmail);
             }
@@ -139,8 +139,9 @@
                 }
                 // Always store the values after validation
                 localStorage.setItem("username", username || 'User'); 
-                if (decodedPayload.email && !localStorage.getItem('useremail')) {
-                    localStorage.setItem('useremail', decodedPayload.email);
+                if (useremail && localStorage.getItem('useremail')) {
+                    localStorage.setItem('useremail', useremail);
+                    console.log("Successfully updated useremail:", useremail)
                 }
                 localStorage.setItem("provider_user_id", provider_user_id);
 
@@ -210,6 +211,7 @@
 
         async function verifyUserWithDatabase() {
             const useremail = localStorage.getItem("useremail");
+            console.log("verify user with useremail:", useremail);
             const provider_user_id = localStorage.getItem("provider_user_id");
             try {
                 // Prepare the request payload
@@ -390,6 +392,7 @@
             localStorage.removeItem("useremail");
             localStorage.removeItem("scrollPosition");
             localStorage.removeItem("storedFiles");
+            localStorage.removeItem("userphone");
             
             // Redirect to the desired page
             window.location.href = "https://www.bellblazetech.com/products/our-solutions";
