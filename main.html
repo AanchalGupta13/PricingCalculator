@@ -139,7 +139,7 @@
                 }
                 // Always store the values after validation
                 localStorage.setItem("username", username || 'User'); 
-                if (useremail && localStorage.getItem('useremail')) {
+                if (useremail && (localStorage.getItem('useremail') || !localStorage.getItem('useremail'))) {
                     localStorage.setItem('useremail', useremail);
                     console.log("Successfully updated useremail:", useremail)
                 }
