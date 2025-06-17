@@ -97,7 +97,7 @@ async function sendMessage() {
         const payload = JSON.stringify({ body: JSON.stringify({ query: userInput }) });
 
         try {
-            let response = await fetch("https://al0pc26yjl.execute-api.ap-south-1.amazonaws.com/prod/dev/pricing-chatbot", {
+            let response = await fetch("https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/pricing-chatbot", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: payload,

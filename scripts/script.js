@@ -104,7 +104,7 @@ async function updateUsageCounters() {
 } 
 
 const s3 = new AWS.S3();
-const BUCKET_NAME = "price--inventory-dev";
+const BUCKET_NAME = "price--inventory";
 let previousFileList = []; // Store previous file list to track changes
 let processingStarted = false; // Flag to track if processing has started
 let uploadedFilename = ""; // Used to track original upload

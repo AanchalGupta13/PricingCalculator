@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Pricing Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/styles.css">
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1040.0.min.js"></script>
 </head>
 
 <body>
-    <img src="BellBlazeTech-Logo.png" alt="Logo" class="logo">
+    <img src="assets/images/BellBlazeTech-Logo.png" alt="Logo" class="logo">
     <header style="position: relative;">
         <!-- ℹ️ Info Button with toggle -->
         <button class="info-button" onclick="toggleInfoPanel()">ℹ️</button>
@@ -51,7 +51,7 @@
 
             <h3>Sample Template</h3>
             <p>Download the sample server configuration template file to see the expected format:</p>
-            <a href="server_configurations.xlsx" class="download-link" download><img src="download.png"
+            <a href="server_configurations.xlsx" class="download-link" download><img src="assets/images/download.png"
                     class="button-icon">Download Sample File</a>
         </div>
     </header>
@@ -66,7 +66,7 @@
                     <p>Please upload <strong>Excel</strong> files only (Max size: <strong>1 MB</strong>)</p>
                 </div>
                 <button onclick="uploadFile()">
-                    <img src="upload.png" class="button-icon">Upload
+                    <img src="assets/images/upload.png" class="button-icon">Upload
                 </button>
             </div>
             <div id="uploadStatus" class="status-message"> </div>
@@ -74,7 +74,7 @@
             <div class="file-list-section">
                 <h2>📜 Available Files</h2>
                 <select id="fileDropdown"></select>
-                <button onclick="downloadSelectedFile()"><img src="download.png" class="button-icon">Download</button>
+                <button onclick="downloadSelectedFile()"><img src="assets/images/download.png" class="button-icon">Download</button>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
             </div>
             <div class="chat-input">
                 <input type="text" id="userInput" placeholder="Describe your server configuration..." />
-                <button onclick="sendMessage()"><img src="send.png" class="icon">Send</button>
+                <button onclick="sendMessage()"><img src="assets/images/send.png" class="icon">Send</button>
             </div>
         </div>
     </div>
@@ -123,7 +123,7 @@
     </script>
 
     <script>
-        const UNIFIED_API_ENDPOINT = 'https://al0pc26yjl.execute-api.ap-south-1.amazonaws.com/prod/dev/verifyhttps://al0pc26yjl.execute-api.ap-south-1.amazonaws.com/prod/dev/payment/verify';
+        const UNIFIED_API_ENDPOINT = 'https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify';
         const MAX_RETRY_ATTEMPTS = 3;
         let retryCount = 0;
         // Check subscription status on page load
@@ -453,8 +453,7 @@
                 window.location.href = "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/products/our-solutions";
             }
     </script>
-    <script src="script.js"></script>
-    <script src="chat.js"></script>
+    <script src="scripts/script.js"></script>
+    <script src="scripts/chat.js"></script>
 </body>
-
 </html>

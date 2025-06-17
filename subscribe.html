@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscribe - AWS Pricing Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-    <img src="BellBlazeTech-Logo.png" alt="Logo" class="logo">
+    <img src="assets/images/BellBlazeTech-Logo.png" alt="Logo" class="logo">
     <div class="subscription-container">
         <h1>Subscribe to Premium</h1>
         <p>Get more access to all features</p>
@@ -185,7 +185,7 @@
                     payload.provider_user_id = paymentData.provider_user_id;
                 }
                 console.log("Sending payment data:", payload);
-                const response = await fetch('https://al0pc26yjl.execute-api.ap-south-1.amazonaws.com/prod/dev/payment/verify', {
+                const response = await fetch('https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
