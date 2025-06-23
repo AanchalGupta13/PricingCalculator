@@ -21,12 +21,19 @@ header {
 }
 
 .info-button {
+    padding-top: 10px;
+    padding-bottom: 30px;
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
     color: #007bff;
     vertical-align: middle;
+}
+
+.info-button:hover {
+    background: none;
+    transform: scale(1.05);
 }
 
 .info-panel p, h4{
