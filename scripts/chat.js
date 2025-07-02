@@ -22,6 +22,57 @@ function clearInput() {
 }
 
 const provider_user_id = localStorage.getItem("provider_user_id");
+
+// Update the message display functions
+function displayUserMessage(message) {
+    const messagesDiv = document.getElementById("messages");
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("message", "user-message");
+    
+    messageElement.innerHTML = `
+        <div class="message-header">You</div>
+        <div class="message-content">${message}</div>
+        <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+    `;
+    
+    messagesDiv.appendChild(messageElement);
+    scrollToBottom();
+}
+
+function displayBotMessage(message, isEstimate = false) {
+    const messagesDiv = document.getElementById("messages");
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("message", "bot-message");
+    
+    if (isEstimate) {
+        messageElement.innerHTML = `
+            ${message}
+            <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        `;
+    } else {
+        messageElement.innerHTML = `
+            <div class="message-content">${message}</div>
+            <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        `;
+    }
+    
+    messagesDiv.appendChild(messageElement);
+    scrollToBottom();
+}
+
+// Add these functions to show/hide typing indicator
+function showTypingIndicator() {
+    const typingElement = document.getElementById('typingIndicator');
+    typingElement.style.display = 'flex';
+    scrollToBottom(); // Make sure it's visible
+}
+
+function hideTypingIndicator() {
+    const typingElement = document.getElementById('typingIndicator');
+    typingElement.style.display = 'none';
+}
+
+// Update the sendMessage function to use these new display functions
 async function sendMessage() {
     const useremail = localStorage.getItem("useremail");
     const userInput = document.getElementById("userInput").value.trim();
@@ -67,9 +118,11 @@ async function sendMessage() {
         }
 
         // Display user message
-        const messagesDiv = document.getElementById("messages");
-        messagesDiv.innerHTML += `<div class="user-message">👤 <b>You:</b> ${userInput}</div>`;
+        displayUserMessage(userInput);
 
+        // Show typing indicator
+        showTypingIndicator();
+    
         // Increment counter
         const provider_user_id = localStorage.getItem("provider_user_id");
         // Prepare the request payload
@@ -103,55 +156,57 @@ async function sendMessage() {
                 body: payload,
             });
 
+            // Hide typing indicator before showing response
+            hideTypingIndicator();
+
             let responseData = await response.json();
 
             if (responseData.body) {
                 let parsedBody = JSON.parse(responseData.body);
 
                 if (parsedBody.cost_estimate && Array.isArray(parsedBody.cost_estimate) && parsedBody.cost_estimate.length > 0) {
-                    if (parsedBody.cost_estimate && Array.isArray(parsedBody.cost_estimate)) {
-                        parsedBody.cost_estimate.forEach((estimate, index) => {
-                            let formattedResponse = `<div class="ai-message">
-                            🤖 <b>AI:</b> <b>Server ${index + 1} Estimate:</b>
+                    parsedBody.cost_estimate.forEach((estimate, index) => {
+                        let formattedResponse = `
+                            <b>Server ${index + 1} Estimate:</b>
                             <div style="margin-top: 10px; margin-bottom: 10px; overflow-x: auto;">
-                            <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fafafa; box-shadow: 0 0 5px rgba(0,0,0,0.05);">
-                            <thead>
-                            <tr style="background-color: #f0f0f0; color: #333; font-weight: bold;">
-                                <th style="padding: 10px 14px; text-align: left; border: 1px solid #ddd;">Parameter</th>
-                                <th style="padding: 10px 14px; text-align: left; border: 1px solid #ddd;">Value</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr><td style="padding: 10px 14px; border: 1px solid #ddd;">Instance Type</td><td style="padding: 10px 14px; border: 1px solid #ddd;">${estimate.InstanceType}</td></tr>
-                            <tr><td style="padding: 10px 14px; border: 1px solid #ddd;">Storage</td><td style="padding: 10px 14px; border: 1px solid #ddd;">${estimate.Storage}</td></tr>
-                            <tr><td style="padding: 10px 14px; border: 1px solid #ddd;">Database</td><td style="padding: 10px 14px; border: 1px solid #ddd;">${estimate.Database === "No" ? "No Database" : estimate.Database}</td></tr>
-                            <tr><td style="padding: 10px 14px; border: 1px solid #ddd;">Monthly Server Cost</td><td style="padding: 10px 14px; border: 1px solid #ddd;">${estimate["Monthly Server Cost"]}</td></tr>
-                            <tr><td style="padding: 10px 14px; border: 1px solid #ddd;">Monthly Storage Cost</td><td style="padding: 10px 14px; border: 1px solid #ddd;">${estimate["Monthly Storage Cost"]}</td></tr>
-                            <tr><td style="padding: 10px 14px; border: 1px solid #ddd;">Monthly Database Cost</td><td style="padding: 10px 14px; border: 1px solid #ddd;">${estimate["Monthly Database Cost"]}</td></tr>
-                            <tr style="background-color: #e8f5e9; font-weight: bold;">
-                                <td style="padding: 10px 14px; border: 1px solid #ddd;">Total Pricing</td>
-                                <td style="padding: 10px 14px; border: 1px solid #ddd;">${estimate["Total Pricing"]}</td>
-                            </tr>
-                            </tbody>
-                            </table>
-                            </div></div>`;
-                    
-                            messagesDiv.innerHTML += formattedResponse;
-                        });
-                    }                
+                                <table class="estimate-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Instance Type</td><td>${estimate.InstanceType}</td></tr>
+                                        <tr><td>Operating System</td><td>${estimate.OS}</td></tr>
+                                        <tr><td>Region</td><td>${estimate.Region}</td></tr>
+                                        <tr><td>Storage</td><td>${estimate.Storage}</td></tr>
+                                        <tr><td>Database</td><td>${estimate.Database === "No" ? "No Database" : estimate.Database}</td></tr>
+                                        <tr><td>On-demand Monthly Server Cost</td><td>${estimate["Monthly Server Cost"]}</td></tr>
+                                        <tr><td>Monthly Storage Cost</td><td>${estimate["Monthly Storage Cost"]}</td></tr>
+                                        <tr><td>Monthly Database Cost</td><td>${estimate["Monthly Database Cost"]}</td></tr>
+                                        <tr class="total-row">
+                                            <td>Total Monthly Pricing</td>
+                                            <td>${estimate["Total Monthly Pricing"]}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                        displayBotMessage(formattedResponse, true);
+                    });
                 } else {
-                    messagesDiv.innerHTML += `<div class="ai-message">🤖 <b>AI:</b> Error processing cost estimate.</div>`;
+                    displayBotMessage("Error processing cost estimate.");
                 }
             } else {
-                messagesDiv.innerHTML += `<div class="ai-message">🤖 <b>AI:</b> Invalid response from server.</div>`;
+                displayBotMessage("Invalid response from server.");
             }
         } catch (error) {
-            messagesDiv.innerHTML += `<div class="ai-message">🤖 <b>AI:</b> Request failed.</div>`;
+            displayBotMessage("Request failed.");
         }
     } catch (error) {
         console.error("Error in sendMessage:", error);
-        const messagesDiv = document.getElementById("messages");
-        messagesDiv.innerHTML += `<div class="error-message">⚠️ Error processing your request</div>`;
+        displayBotMessage("Error processing your request");
     }
 
     scrollToBottom();  // Auto-scroll after chatbot response
