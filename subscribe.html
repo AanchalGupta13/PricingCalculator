@@ -32,6 +32,8 @@
         </form>
     </div>
 
+    <script src="scripts/toast.js"></script>
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
@@ -56,21 +58,21 @@
             const phone = document.getElementById('phone').value.trim();
             
             if (!email || email === 'undefined') {
-                alert("Please enter a valid email address");
+                Toast.error("Please enter a valid email address");
                 document.getElementById('email').focus();
                 return;
             } else if (!isValidEmail(email)) {
-                alert("Please enter a valid email address");
+                Toast.error("Please enter a valid email address");
                 document.getElementById('email').focus();
                 return;
             }
 
             if (!phone) {
-                alert("Please enter your phone number");
+                Toast.error("Please enter your phone number");
                 document.getElementById('phone').focus();
                 return;
             } else if (!isValidPhone(phone)) {
-                alert("Please enter a valid 10-digit phone number");
+                Toast.error("Please enter a valid 10-digit phone number");
                 document.getElementById('phone').focus();
                 return;
             }
@@ -117,7 +119,7 @@
                 }
                 const data = await response.json();
                 if (!data || !data?.order_id || !data?.key) {
-                    alert("Failed to create Razorpay order.");
+                    Toast.error("Failed to create Razorpay order.");
                     console.error("Invalid response from API:", data);
                     return;
                 }
@@ -147,16 +149,16 @@
                                 provider_user_id
                             });
                             if (verificationSuccess) {
-                                alert("🎉 Thank you for subscribing!");
+                                Toast.success("🎉 Thank you for subscribing!");
                                 // Then redirect to success page
                                 window.location.href = "success.html";
                             } else {
-                                alert("Payment verification failed. Please contact support.");
+                                Toast.error("Payment verification failed. Please contact support.");
                             }
                             // }
                         } catch (error) {
                             console.error("Payment processing error:", error);
-                            alert("An error occurred during payment processing.");
+                            Toast.error("An error occurred during payment processing.");
                         }
                     },
                     "theme": {
@@ -166,7 +168,7 @@
                 rzp.open();
             } catch (err) {
                 console.error("Error while creating order:", err);
-                alert("Something went wrong. Please try again.");
+                Toast.error("Something went wrong. Please try again.");
             }
         }
 
@@ -216,5 +218,6 @@
             }
         }
     </script>
+    <script src="scripts/toast.js"></script>
 </body>
 </html>
