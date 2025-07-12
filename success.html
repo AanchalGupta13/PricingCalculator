@@ -24,9 +24,9 @@
         const email = localStorage.getItem("useremail");
         
         // Auto-redirect with email in URL after 10 seconds
-        setTimeout(() => {
-            window.location.href = `main.html?email=${encodeURIComponent(email)}`;
-        }, 10000);
+        // setTimeout(() => {
+        //     window.location.href = `main.html?email=${encodeURIComponent(email)}`;
+        // }, 10000);
         
         // Update button click handler
         document.querySelector('.redirect-button').onclick = function() {

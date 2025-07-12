@@ -21,15 +21,9 @@
             </h4>
 
             <nav class="nav">
-                <a href="#" id="priceBotBtn" class="nav-item active">Price BOT</a>
+                <a href="#" id="priceBotBtn" class="nav-item active">Price Assistant</a>
                 <a href="#" id="excelOpsBtn" class="nav-item">Excel Operations</a>
             </nav>
-
-            <div id="sampleFileContainer" style="display: none;">
-                <a href="assets/server_configurations.xlsx" class="download-link" download>
-                    <img src="assets/images/download.png" class="button-icon">Sample File
-                </a>
-            </div>
 
             <div class="help">
                 <p>Help</p>
@@ -70,17 +64,17 @@
                     can
                     seamlessly download the generated pricing report directly from the website. The platform also
                     features
-                    an intelligent Price BOT, allowing users to input server, storage, and database configuration
+                    an intelligent Price Assistant, allowing users to input server, storage, and database configuration
                     requirements to provide accurate, real-time AWS cost estimations.</p>
 
                 <h3>Features</h3>
                 <ul>
-                    <li>Price BOT supports multi server queries</li>
+                    <li>Price Assistant supports multi server queries</li>
                     <li>Real-time pricing calculations</li>
                     <li>Secure file storage</li>
                     <li>Supports Dual Input Modes- File Upload/Download Section: Process Excel/CSV configuration sheets
                         &
-                        Query Interface Price BOT: Describe server requirements in plain English</li>
+                        Query Interface Price Assistant: Describe server requirements in plain English</li>
                 </ul>
             </div>
 
@@ -98,16 +92,17 @@
                 <ul>
                     <li>Upload your server configuration files (only Excel or csv format)</li>
                     <li>Select your result file and download</li>
-                    <li>Use the Price BOT and can query like - <br>
+                    <li>Use the Price Assistant and can query like - <br>
                         <b>-</b> 24 Cores CPU, 128 GB RAM, 512GB SSD storage and Microsoft SQL Server database <br>
                         <b>-</b> 24 Core CPU, 128 GB RAM, 512GB SSD storage <br>
-                        <b>-</b> 24 vCPU, 128 GB RAM, 512GB SSD storage
-                        <b>-</b> 24 vCPU, 128 GB RAM, 512GB SSD storage
+                        <b>-</b> 4 Core cpu, 32 gb ram for SUSE Operating System in US East (N. Virginia) Region <br>
+                        <b>-</b> t2.medium <br>
+                        <b>-</b> t4g.2xlarge instance type for RHEL <br>
                     </li>
                 </ul>
             </div>
 
-            <!-- PRICE BOT VIEW -->
+            <!-- PRICE Assistant VIEW -->
             <div id="priceBotSection" class="chat-container">
                 <div class="chatbox" id="chatbox">
                     <div id="messages"></div>
@@ -116,7 +111,7 @@
                         <div class="typing-dot"></div>
                         <div class="typing-dot"></div>
                         <div class="typing-dot"></div>
-                        <span style="font-size: 14px;">Price BOT is Analyzing...</span>
+                        <span style="font-size: 14px;">Price Assistant is Analyzing...</span>
                     </div>
                 </div>
                 <div class="chat-input">
@@ -126,6 +121,11 @@
             </div>
 
             <!-- EXCEL VIEW -->
+             <div id="sampleFileContainer" style="display: none;">
+                <a href="assets/Sample_Input_template.xlsx" class="download-link" download>
+                    <img src="assets/images/download.png" class="button-icon">Sample File
+                </a>
+            </div>
             <div id="excelSection" class="file-section" style="display: none;">
                 <h2 class="m1">📂 Upload & Download Files</h2>
                 <div class="upload-section">

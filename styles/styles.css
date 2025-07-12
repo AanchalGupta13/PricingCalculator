@@ -119,7 +119,7 @@ body {
 }
 
 .sidebar-footer {
-    margin-top: 20px;
+    margin-top: 10px;
     padding-top: 10px;
     display: flex;
     flex-direction: column;
@@ -431,26 +431,27 @@ hr {
     font-weight: bold;
 }
 
-.m1, .m2{
+.m1{
+    margin-top: 30px;
     color: black;
 }
 
 /* File Section Styles */
 .file-section {
-    padding: 15px;
     margin: 10px;
+    margin-top: 50px;
+    padding: 15px;
     gap: 15px;
 }
 
+button.upload-btn {
+    margin-bottom: 23px;
+}
+
 .upload-section {
-    background: white;
-    background: #e5f5fa;
     padding: 15px;
-    border-radius: 10px;
     margin: 20px 10px;
     margin-bottom: 30px;
-    border: 1px solid #e0e0e0;
-    border: 1px solid #ddd;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
@@ -463,29 +464,18 @@ hr {
 }
 
 .upload-section p {
+    padding-left: 7px;
     font-size: 12px;
     color: #666;
     margin-top: 8px;
 }
 
 .file-list-section {
-    background: white;
-    /* background: #e5f5fa; */
     display: flex;
     gap: 15px;
     margin: 20px 10px;
     margin-top: 30px;
     padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    /* border: 1px solid #ddd; */
-}
-
-#fileInput, #fileDropdown {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 14px;
 }
 
 .file-controls {
@@ -553,20 +543,29 @@ button:hover {
     height: auto;
 }
 
+#sampleFileContainer {
+    margin-top: 10px;
+    float: right;
+    width: 200px;
+    margin-right: -1.2em;
+    background-color: #af8d8d00;
+}
+
 .download-link {
-    width: 100%;
-    justify-content: center;
-    padding: 10px;
-    align-self: center;
-    display: inline-flex;
-    align-items: center;
+    width: 70%;
+    height: auto;
     gap: 5px;
-    background: #2e80bb;
+    background: black;
     color: white;
     text-decoration: none;
     border-radius: 8px;
     font-size: 14px;
     transition: background-color 0.3s;
+    justify-content: center;
+    padding: 10px;
+    align-self: center;
+    display: inline-flex;
+    /* background: #2e80bb; */
 }
 
 .download-link:hover {
@@ -618,9 +617,9 @@ button:hover {
     position: absolute;
     top: 10px;
     left: 10px;
-    width: 200px; /* Adjust size */
+    width: 200px; 
     height: auto;
-    opacity: 0.8; /* Adjust transparency */
+    opacity: 0.8; 
 }
 
 .subscription-container {
@@ -703,13 +702,10 @@ button:hover {
 }
 
 .payment-status-container button {
-    padding: 0.75rem 1.5rem;
-    margin: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-weight: bold;
+    align-self: center;
 }
 
 .payment-status-container button:first-of-type {
@@ -765,17 +761,6 @@ input:invalid + .error-message {
 .success-message p {
     margin-bottom: 1.5rem;
     color: #555;
-}
-
-.redirect-button {
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-    padding: 0.75rem 1.5rem;
 }
 
 /* Toast Notification Styles */
