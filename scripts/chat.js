@@ -180,13 +180,19 @@ async function sendMessage() {
                                         <tr><td>Instance Type</td><td>${estimate.InstanceType}</td></tr>
                                         <tr><td>Operating System</td><td>${estimate.OS}</td></tr>
                                         <tr><td>Region</td><td>${estimate.Region}</td></tr>
-                                        ${estimate.Storage && estimate.Storage !== "None" && estimate.Storage !== "undefined" ? `<tr><td>Storage</td><td>${estimate.Storage}</td></tr>` : ''}
+                                        ${estimate.Storage && estimate.Storage !== "None" && estimate.Storage !== "undefined" ? `<tr><td>Storage</td><td>${estimate.Storage} GB</td></tr>` : ''}
                                         ${estimate.Database && estimate.Database !== "None" && estimate.Database !== "undefined" ? `<tr><td>Database</td><td>${estimate.Database === "No" ? "No Database" : estimate.Database}</td></tr>` : ''}
+                                        ${(estimate.Storage && estimate.Storage !== "None" && estimate.Storage !== "undefined") &&
+                                            (estimate.Database && estimate.Database !== "None" && estimate.Database !== "undefined") ?
+                                            `
+                                                <tr><td>Recommended Volume Type</td><td>${estimate["Recommended Volume Type"]}</td></tr>
+                                                <tr><td>Estimated IOPS</td><td>${estimate["Estimated IOPS"]}</td></tr>
+                                            ` : ''}
                                         <tr><td>On-demand Monthly Server Cost</td><td>${estimate["On-demand Monthly Server Cost"]}</td></tr>
                                         <tr><td>Monthly EC2 Instance Saving Plan Cost (3 years, no upfront)</td><td>${estimate["Monthly EC2 Instance Saving Plan Cost (for 3 years, no upfront)"]}</td></tr>
                                         <tr><td>3 Years EC2 Instance Saving Plan Cost (3 years, no upfront)</td><td>${estimate["EC2 Instance Saving Plan Cost (for 3 years, no upfront)"]}</td></tr>
-                                        <tr><td>Monthly Storage Cost</td><td>${estimate["Monthly Storage Cost"]}</td></tr>
-                                        <tr><td>Monthly Database Cost</td><td>${estimate["Monthly Database Cost"]}</td></tr>
+                                        <tr><td>Monthly Storage Cost</td><td>${estimate["Monthly EBS Volume Cost"]}</td></tr>
+                                        <tr><td>Monthly Data Transfer Cost</td><td>${estimate["Monthly Data Transfer Cost"]}</td></tr>
                                         <tr class="total-row">
                                             <td>Total Monthly Pricing (for on-demand/for ec2 saving plan)</td>
                                             <td>${estimate["Total Monthly Pricing (for on-demand)"]}/${estimate["Total Monthly Pricing (for 3 years, no upfront ec2 saving plan)"]}</td>

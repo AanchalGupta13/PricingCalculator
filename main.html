@@ -14,11 +14,10 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
-                <img src="assets/images/BellBlazeTech-Logo.png" alt="Logo" class="logo-img">
+                <img src="assets/images/bbt-logo.svg" alt="Logo" class="logo-img">
             </div>
 
-            <h4 style="text-align: center;"><img src="assets/images/Calculator.png" class="icon">AWS Pricing Calculator
-            </h4>
+            <h4 style="text-align: center; color: white;">AWS Pricing Calculator</h4>
 
             <nav class="nav">
                 <a href="#" id="priceBotBtn" class="nav-item active">Price Assistant</a>
@@ -27,12 +26,12 @@
 
             <div class="help">
                 <p>Help</p>
-                <button class="info-button" onclick="toggleInfoPanel()"><img src="assets/images/About-Product.png"
-                        class="icon">About Product</button>
-                <button class="info-button" onclick="togglePrivacyPanel()"><img src="assets/images/Privacy.png"
-                        class="icon">Privacy</button>
-                <button class="info-button" onclick="toggleUserGuidePanel()"><img src="assets/images/Userguide.png"
-                        class="icon">User Guide</button>
+                <button class="info-button" onclick="toggleInfoPanel()"><img src="assets/images/about.svg"
+                        class="icon"> About Product</button>
+                <button class="info-button" onclick="togglePrivacyPanel()"><img src="assets/images/privacy.svg"
+                        class="icon"> Privacy</button>
+                <button class="info-button" onclick="toggleUserGuidePanel()"><img src="assets/images/user-guide.svg"
+                        class="icon"> User Guide</button>
             </div>
 
             <div class="sidebar-footer">
@@ -46,7 +45,7 @@
                     <button onclick="handleSubscription()" class="subscribe">Subscribe</button>
                 </div>
                 <div id="userInfoContainer" class="user-info-container"></div>
-                <a href="#" class="signout" onclick="logout()"><img src="assets/images/Signout.png" class="icon"> Sign
+                <a href="#" class="signout" onclick="logout()"><img src="assets/images/logout.svg" class="icon"> Sign
                     Out</a>
             </div>
         </aside>
@@ -121,33 +120,53 @@
             </div>
 
             <!-- EXCEL VIEW -->
-             <div id="sampleFileContainer" style="display: none;">
-                <a href="assets/Sample_Input_template.xlsx" class="download-link" download>
-                    <img src="assets/images/download.png" class="button-icon">Sample File
-                </a>
-            </div>
-            <div id="excelSection" class="file-section" style="display: none;">
-                <h2 class="m1">📂 Upload & Download Files</h2>
-                <div class="upload-section">
-                    <div class="col">
-                        <input type="file" id="fileInput" accept=".xls,.xlsx,.xlsm,csv">
-                        <p>Supported formats: .xls, .xlsx, .xlsm, .csv (Max size: <strong>1 MB</strong>)</p>
+            <div id="excelSection" class="file-section" style="display: none;">     
+                <h4 class="upload-heading">Powered by Advanced <span class="highlight">AI Models</span></h4>
+                <p class="upload-subtext">Easily estimate and optimize your AWS costs with a few clicks</p>
+                <div class="upload-card">
+                    <div class="upload-box">
+                        <input type="file" id="fileInput" style="display: none;" accept=".xls,.xlsx,.xlsm,csv">
+                        <button onclick="document.getElementById('fileInput').click()" class="btn">
+                            <img src="assets/images/upload-icon.svg" class="upload-icon">
+                        </button>
+                        <p class="drag-text">Drag & drop files or <span class="browse-link" onclick="document.getElementById('fileInput').click()">Browse</span></p>
+                        <p class="supported-types">Supported formats: .xls, .xlsx, .xlsm, .csv (Max size: <strong>1 MB</strong>)</p>
+                        <div class="upload-info">
+                            <div id="selectedFileName" style="margin-top: 10px;"></div>
+                            <div id="uploadStatus" class="upload-status"></div>
+                        </div>
                     </div>
-                    <button onclick="uploadFile()" class="upload-btn">
-                        <img src="assets/images/upload.png" class="button-icon">Upload
-                    </button>
+                    <button onclick="uploadFile()" class="upload-action-btn"><img src="assets/images/Upload.svg" class="upload-btn">UPLOAD FILES</button>
+                    <div id="uploadStatus" class="upload-status"></div>
+                    <div class="sample-btn-row">
+                        <p class="sample-p">No xls? Try This</p>
+                        <div id="sampleFileContainer" style="display: none;">
+                            <a href="assets/Sample_Input_template.xlsx" class="sample-excel-btn" download>
+                            Sample Excel<img src="assets/images/xls.svg" class="icon">
+                        </a>
+                        </div>
+                    </div>
                 </div>
-                <div id="uploadStatus" class="status-message"></div>
 
-                <h2 class="m1">📜 Available Files</h2>
-                <div class="file-list-section">
-                    <div class="file-controls">
-                        <select id="fileDropdown" class="file-selector"></select>
-                        <button onclick="downloadSelectedFile()" class="download-btn">
-                            <img src="assets/images/download.png" class="button-icon">Download
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-text">
+                            <h3>Powered by Advanced <span class="highlight1">AI Models</span></h3>
+                            <p class="p2">Lorem ipsum dollar</p>
+                        </div>
+                        <button onclick="downloadSelectedFile()" class="download-main-btn">
+                            <img src="assets/images/download.svg" alt="Download">
+                            DOWNLOAD
                         </button>
                     </div>
+                    <div class="result-content">
+                        <div class="file-list" id="fileListContainer">
+                        <!-- Dynamically populated with file rows -->
+                        </div>
+                    </div>
                 </div>
+            </div>
+            </div>
         </main>
     </div>
 
@@ -186,22 +205,80 @@
             });
 
             // Default view
-            setActiveView('pricebot');
+            const defaultView = localStorage.getItem("selectedView") || "pricebot";
+            setActiveView(defaultView);
         });
 
         function toggleInfoPanel() {
             const panel = document.getElementById('infoPanel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+            const button = document.querySelector('button[onclick="toggleInfoPanel()"]');
+
+            const isVisible = panel.style.display === 'block';
+            panel.style.display = isVisible ? 'none' : 'block';
+
+            // Toggle active class
+            if (!isVisible) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+
+            // Hide other panels and remove active class from others
+            document.getElementById('privacyPanel').style.display = 'none';
+            document.getElementById('user-guidePanel').style.display = 'none';
+            document.querySelector('button[onclick="togglePrivacyPanel()"]').classList.remove('active');
+            document.querySelector('button[onclick="toggleUserGuidePanel()"]').classList.remove('active');
         }
 
         function togglePrivacyPanel() {
             const panel = document.getElementById('privacyPanel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+            const button = document.querySelector('button[onclick="togglePrivacyPanel()"]');
+
+            const isVisible = panel.style.display === 'block';
+            panel.style.display = isVisible ? 'none' : 'block';
+
+            if (!isVisible) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+
+            document.getElementById('infoPanel').style.display = 'none';
+            document.getElementById('user-guidePanel').style.display = 'none';
+            document.querySelector('button[onclick="toggleInfoPanel()"]').classList.remove('active');
+            document.querySelector('button[onclick="toggleUserGuidePanel()"]').classList.remove('active');
         }
 
         function toggleUserGuidePanel() {
             const panel = document.getElementById('user-guidePanel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+            const button = document.querySelector('button[onclick="toggleUserGuidePanel()"]');
+
+            const isVisible = panel.style.display === 'block';
+            panel.style.display = isVisible ? 'none' : 'block';
+
+            if (!isVisible) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+
+            priceBotBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.setItem("selectedView", "pricebot");
+                setActiveView('pricebot');
+            });
+
+            excelOpsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.setItem("selectedView", "excel");
+                setActiveView('excel');
+            });
+
+
+            document.getElementById('infoPanel').style.display = 'none';
+            document.getElementById('privacyPanel').style.display = 'none';
+            document.querySelector('button[onclick="toggleInfoPanel()"]').classList.remove('active');
+            document.querySelector('button[onclick="togglePrivacyPanel()"]').classList.remove('active');
         }
 
         // For token validation and user verification...
@@ -514,13 +591,8 @@
 
         function logout() {
             // Clear all stored data
-            localStorage.removeItem("token");
-            localStorage.removeItem("username");
-            localStorage.removeItem("url_email_backup");
-            localStorage.removeItem("useremail");
-            localStorage.removeItem("scrollPosition");
-            localStorage.removeItem("storedFiles");
-            localStorage.removeItem("userphone");
+            localStorage.clear();
+            clearFileList();
 
             // Redirect to the desired page
             window.location.href = "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/products/our-solutions";
