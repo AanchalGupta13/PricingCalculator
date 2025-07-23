@@ -213,7 +213,6 @@ async function uploadFile() {
 
         document.getElementById('fileInput').value = "";
         selectedFile = null;
-
     } catch (error) {
         console.error("Upload failed:", error);
         const uploadStatus = document.getElementById("uploadStatus");
@@ -233,11 +232,31 @@ async function uploadFile() {
 
 function showProcessingIndicator(filename) {
     const fileListContainer = document.getElementById("fileListContainer");
-    const displayText = filename ? `Calculating ${filename}` : "Calculating";
+    const displayText = filename ? `Processing ${filename}` : "Processing";
     
     fileListContainer.innerHTML = `
-        <div class="calculating-text">${displayText}</div>
+        <div class="file-row processing">
+            <div class="file-processing-info">
+                <span class="file-name">${displayText}</span>
+                <span class="file-status">Calculating..</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
     `;
+    
+    // Animate the progress bar (simulated progress)
+    const progressBar = fileListContainer.querySelector('.progress-bar');
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+        }
+        progressBar.style.width = `${progress}%`;
+    }, 500);
 }
 
 function clearProcessingIndicator() {
@@ -359,7 +378,7 @@ function listFiles() {
             
             const statusSpan = document.createElement("span");
             statusSpan.className = "file-status";
-            statusSpan.textContent = isError ? "❌ Error" : "✅ Ready";
+            statusSpan.textContent = isError ? "Error" : "Ready";
             statusSpan.style.color = isError ? "red" : "green";
             
             fileRow.appendChild(fileNameSpan);

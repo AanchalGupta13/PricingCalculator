@@ -1,9 +1,17 @@
-/* Base Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; /* prevent horizontal scroll */
+    overflow-y: auto;   /* allow vertical scroll */
 }
 
 body {
@@ -12,9 +20,11 @@ body {
 }
 
 .container {
-    background-color: #F4F7FF;
     display: flex;
+    flex-direction: row;
     min-height: 100vh;
+    overflow: hidden;
+    background-color: #F4F7FF;
 }
 
 /* Sidebar Styles */
@@ -71,7 +81,7 @@ body {
 }
 
 .help {
-    margin-top: 20px;
+    margin-top: 5px;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -128,7 +138,7 @@ body {
 }
 
 .sidebar-footer {
-    margin-top: 50px;
+    margin-top: 25px;
     padding-top: 10px;
     display: flex;
     flex-direction: column;
@@ -154,7 +164,8 @@ body {
     padding: 20px;
     padding-bottom: 0;
     background-color: #e4f6fc;
-    overflow-y: auto;
+    overflow-y: auto;  /* Allow scroll inside main content only */
+    height: 100vh;
 }
 
 .main-content h1 {
@@ -239,8 +250,10 @@ hr {
 /* Chat Container Styles */
 .chat-container {
     margin: 10px;
+    margin-bottom: 0;
     gap: 15px;
     padding: 15px;
+    padding-bottom: 0;
     display: flex;
     flex-direction: column;
 }
@@ -697,6 +710,44 @@ hr {
     color: #666;
 }
 
+.file-row.processing {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 16px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.file-processing-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+.progress-container {
+    width: 100%;
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #3FA3FF, #6264FF);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.file-row.processing .file-status {
+    color: #2e80bb;
+    font-weight: bold;
+}
+
 #selectedFileName {
     color: #4CAF50;
     font-weight: bold;
@@ -1046,6 +1097,7 @@ input:invalid + .error-message {
 
     .container {
         flex-direction: column;
+        height: auto;
     }
     
     .sidebar {
@@ -1054,12 +1106,14 @@ input:invalid + .error-message {
     }
     
     .main-content {
+        flex: 1;
+        overflow-y: visible;
         padding: 15px;
     }
     
     .top-bar {
         flex-direction: column;
-        align-items: flex-start;
+        gap: 10px;
     }
     
     .view-selector {
@@ -1067,7 +1121,7 @@ input:invalid + .error-message {
     }
     
     .chatbox {
-        height: 300px;
+        max-height: 400px;
     }
     
     .upload-section, .file-list-section {
@@ -1077,6 +1131,31 @@ input:invalid + .error-message {
 }
 
 @media (max-width: 480px) {
+    .main-content {
+        padding: 10px;
+    }
+
+    .upload-heading {
+        font-size: 1.5rem;
+    }
+
+    .upload-subtext,
+    .usage-info {
+        font-size: 0.9rem;
+    }
+
+    .chatbox {
+        max-height: 300px;
+    }
+
+    .upload-box {
+        padding: 10px;
+    }
+
+    .upload-icon {
+        width: 40px;
+    }
+
     .file-section {
         padding: 15px;
     }
@@ -1090,10 +1169,6 @@ input:invalid + .error-message {
     }
 
     .sidebar {
-        padding: 10px;
-    }
-    
-    .main-content {
         padding: 10px;
     }
     
