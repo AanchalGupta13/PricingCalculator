@@ -479,19 +479,6 @@ function clearFileList() {
     processingStarted = false;
 }
 
-// Handle tab/window visibility change
-document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-        // Tab is now inactive - clear the file list
-        clearFileList();
-    } else {
-        // Tab is active again - restart file list refresh if logged in
-        if (localStorage.getItem("token") && !fileListInterval) {
-            fileListInterval = setInterval(listFiles, 5000);
-        }
-    }
-});
-
 window.onload = function () {
     // Clear any existing intervals
     if (fileListInterval) {
