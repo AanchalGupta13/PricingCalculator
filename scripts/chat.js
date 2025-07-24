@@ -1,3 +1,4 @@
+let mergedEstimates = [];
 // Call it when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     updateUsageCounters();
@@ -165,44 +166,56 @@ async function sendMessage() {
                 let parsedBody = JSON.parse(responseData.body);
 
                 if (parsedBody.cost_estimate && Array.isArray(parsedBody.cost_estimate) && parsedBody.cost_estimate.length > 0) {
-                    parsedBody.cost_estimate.forEach((estimate, index) => {
-                        let formattedResponse = `
-                            <b>Server ${index + 1} Estimate:</b>
-                            <div style="margin-top: 10px; margin-bottom: 10px; overflow-x: auto;">
-                                <table class="estimate-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Parameter</th>
-                                            <th>Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>Instance Type</td><td>${estimate.InstanceType}</td></tr>
-                                        <tr><td>Operating System</td><td>${estimate.OS}</td></tr>
-                                        <tr><td>Region</td><td>${estimate.Region}</td></tr>
-                                        ${estimate.Storage && estimate.Storage !== "None" && estimate.Storage !== "undefined" ? `<tr><td>Storage</td><td>${estimate.Storage} GB</td></tr>` : ''}
-                                        ${estimate.Database && estimate.Database !== "None" && estimate.Database !== "undefined" ? `<tr><td>Database</td><td>${estimate.Database === "No" ? "No Database" : estimate.Database}</td></tr>` : ''}
-                                        ${(estimate.Storage && estimate.Storage !== "None" && estimate.Storage !== "undefined") &&
-                                            (estimate.Database && estimate.Database !== "None" && estimate.Database !== "undefined") ?
-                                            `
-                                                <tr><td>Recommended Volume Type</td><td>${estimate["Recommended Volume Type"]}</td></tr>
-                                                <tr><td>Estimated IOPS</td><td>${estimate["Estimated IOPS"]}</td></tr>
-                                            ` : ''}
-                                        <tr><td>On-demand Monthly Server Cost</td><td>${estimate["On-demand Monthly Server Cost"]}</td></tr>
-                                        <tr><td>Monthly EC2 Instance Saving Plan Cost (3 years, no upfront)</td><td>${estimate["Monthly EC2 Instance Saving Plan Cost (for 3 years, no upfront)"]}</td></tr>
-                                        <tr><td>3 Years EC2 Instance Saving Plan Cost (3 years, no upfront)</td><td>${estimate["EC2 Instance Saving Plan Cost (for 3 years, no upfront)"]}</td></tr>
-                                        <tr><td>Monthly Storage Cost</td><td>${estimate["Monthly EBS Volume Cost"]}</td></tr>
-                                        <tr><td>Monthly Data Transfer Cost</td><td>${estimate["Monthly Data Transfer Cost"]}</td></tr>
-                                        <tr class="total-row">
-                                            <td>Total Monthly Pricing (for on-demand/for ec2 saving plan)</td>
-                                            <td>${estimate["Total Monthly Pricing (for on-demand)"]}/${estimate["Total Monthly Pricing (for 3 years, no upfront ec2 saving plan)"]}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        `;
-                        displayBotMessage(formattedResponse, true);
+                    mergedEstimates = [];
+                    parsedBody.cost_estimate.forEach((estimate) => {
+                        mergedEstimates.push(estimate);
                     });
+
+                    // Generate the merged table only after all queries
+                    let tableRows = [
+                        "InstanceType", "OS", "Region", "Storage", "Database",
+                        "Recommended Volume Type", "Estimated IOPS",
+                        "On-demand Monthly Server Cost",
+                        "Monthly EC2 Instance Saving Plan Cost (for 3 years, no upfront)",
+                        "EC2 Instance Saving Plan Cost (for 3 years, no upfront)",
+                        "Monthly EBS Volume Cost",
+                        "Monthly Data Transfer Cost",
+                        "Total Monthly Pricing (for on-demand)",
+                        "Total Monthly Pricing (for 3 years, no upfront ec2 saving plan)"
+                    ];
+
+                    let mergedTable = `<b>Cost Estimate:</b><div style="overflow-x:auto;"><table class="estimate-table"><thead><tr><th>Parameter</th>`;
+
+                    mergedEstimates.forEach((_, i) => {
+                        mergedTable += `<th>Query ${i + 1}</th>`;
+                    });
+
+                    mergedTable += `</tr></thead><tbody>`;
+
+                    tableRows.forEach((row) => {
+                        const isBoldRow = row === "Total Monthly Pricing (for on-demand)" ||
+                                        row === "Total Monthly Pricing (for 3 years, no upfront ec2 saving plan)";
+                        
+                        if (isBoldRow) {
+                            mergedTable += `<tr><td><b>${row}</b></td>`;
+                            mergedEstimates.forEach(est => {
+                                let val = est[row] || "N/A";
+                                mergedTable += `<td><b>${val}</b></td>`;
+                            });
+                            mergedTable += `</tr>`;
+                        } else {
+                            mergedTable += `<tr><td>${row}</td>`;
+                            mergedEstimates.forEach(est => {
+                                let val = est[row] || "N/A";
+                                mergedTable += `<td>${val}</td>`;
+                            });
+                            mergedTable += `</tr>`;
+                        }
+                    });
+
+                    mergedTable += `</tbody></table></div>`;
+                    displayBotMessage(mergedTable, true);
+
                 } else {
                     displayBotMessage("Error processing cost estimate.");
                 }
@@ -210,10 +223,13 @@ async function sendMessage() {
                 displayBotMessage("Invalid response from server.");
             }
         } catch (error) {
+            console.error("Fetch request failed:", error);
+            hideTypingIndicator();
             displayBotMessage("Request failed.");
         }
     } catch (error) {
         console.error("Error in sendMessage:", error);
+        hideTypingIndicator();
         displayBotMessage("Error processing your request");
     }
 
