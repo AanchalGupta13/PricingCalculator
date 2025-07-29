@@ -92,8 +92,8 @@
                     <li>Upload your server configuration files (only Excel or csv format)</li>
                     <li>Select your result file and download</li>
                     <li>Use the Price Assistant and can query like - <br>
-                        <b>-</b> 24 Cores CPU, 128 GB RAM, 512GB SSD storage and Microsoft SQL Server database <br>
-                        <b>-</b> 24 Core CPU, 128 GB RAM, 512GB SSD storage <br>
+                        <b>-</b> 24 Cores CPU, 128 GB RAM, 512GB storage and Microsoft SQL Server database <br>
+                        <b>-</b> 24 Core CPU, 128 GB RAM, 512GB storage <br>
                         <b>-</b> 4 Core cpu, 32 gb ram for SUSE Operating System in US East (N. Virginia) Region <br>
                         <b>-</b> t2.medium <br>
                         <b>-</b> t4g.2xlarge instance type for RHEL <br>
@@ -281,6 +281,23 @@
             document.querySelector('button[onclick="togglePrivacyPanel()"]').classList.remove('active');
         }
 
+        function getBaseURLs() {
+            const isDev = window.location.hostname.includes("dev");
+            const baseLogin = isDev
+                ? "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/dev-pricing-calculator"
+                : "https://www.bellblazetech.com/login?DomainPath=/pricing-calculator";
+
+            const baseSolution = isDev
+                ? "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/products/our-solutions"
+                : "https://www.bellblazetech.com/our-solutions";
+
+            return {
+                loginURL: baseLogin,
+                solutionURL: baseSolution
+            };
+        }
+        const { loginURL, solutionURL } = getBaseURLs();
+
         // For token validation and user verification...
         const UNIFIED_API_ENDPOINT = 'https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify';
         const MAX_RETRY_ATTEMPTS = 3;
@@ -309,7 +326,7 @@
             let token = localStorage.getItem("token");
             if (!token || token.trim() === "") {
                 Toast.error("Unauthorized access. Redirecting...");
-                window.location.href = "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/dev-pricing-calculator";
+                window.location.href = loginURL;
                 return;
             }
 
@@ -368,7 +385,7 @@
 
                 if (!isValidUser) {
                     Toast.error("User not authorized. Redirecting...");
-                    window.location.href = "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/dev-pricing-calculator";
+                    window.location.href = loginURL;
                     return;
                 }
 
@@ -376,7 +393,7 @@
                 checkSubscriptionStatus();
             } catch (error) {
                 console.error('Error during authentication:', error);
-                window.location.href = "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/dev-pricing-calculator";
+                window.location.href = loginURL;
             }
         });
 
@@ -595,7 +612,7 @@
             clearFileList();
 
             // Redirect to the desired page
-            window.location.href = "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/products/our-solutions";
+            window.location.href = solutionURL;
         }
     </script>
     <script src="scripts/script.js"></script>
