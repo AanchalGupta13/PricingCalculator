@@ -1,0 +1,10 @@
+{
+  "loginURL_dev": "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/dev-pricing-calculator",
+  "loginURL_prod": "https://www.bellblazetech.com/login?DomainPath=/pricing-calculator",
+  "our-solutions_dev": "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/products/our-solutions",
+  "our-solutions_prod": "https://www.bellblazetech.com/our-solutions",
+  "chatbot_dev": "https://wgnitr1p05.execute-api.ap-south-1.amazonaws.com/dev/pricing-chatbot",
+  "chatbot_prod": "https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/pricing-chatbot",
+  "verification_dev": "https://wgnitr1p05.execute-api.ap-south-1.amazonaws.com/dev/payment/verify",
+  "verification_prod": "https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify"
+}

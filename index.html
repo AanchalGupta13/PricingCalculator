@@ -12,8 +12,19 @@
 <body>
     <div id="accesscontainer"></div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            createSession();
+        let config = {};
+        document.addEventListener('DOMContentLoaded', async function() {
+            async function init() {
+                try {
+                    const response = await fetch("config.json");
+                    config = await response.json();
+                    console.log("Config data:", config);
+                    createSession(config);
+                } catch (error) {
+                    showError("Failed to load config: " + error.message);
+                }
+            }
+            init();
         });
 
         function createSession() {
@@ -63,12 +74,11 @@
 
         function getLoginURL() {
             const hostname = window.location.hostname.toLowerCase();
-
             if (hostname.includes("dev")) {
-                return "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/dev-pricing-calculator";
+                return config.loginURL_dev;
             } else {
-                return "https://www.bellblazetech.com/login?DomainPath=/pricing-calculator";
-            }
+                return config.loginURL_prod;
+            }            
         }
 
         function showError(message) {

@@ -176,12 +176,36 @@
 
     <script src="scripts/toast.js"></script>
     <script>
+        window.appConfig = {};
+        // Load config before anything else
+        async function loadConfig() {
+            try {
+                const response = await fetch(`config.json?t=${new Date().getTime()}`);
+                if (!response.ok) throw new Error("Failed to load config.json");
+                window.appConfig = await response.json();
+                console.log("Loaded config:", window.appConfig);
+            } catch (err) {
+                console.error("Error loading config:", err);
+                alert("Unable to load application config.");
+            }
+        }
+
+        function getBaseURLs() {
+            const isDev = window.location.hostname.includes("dev");
+            const config = window.appConfig || {};
+            return {
+                loginURL: isDev ? config.loginURL_dev : config.loginURL_prod,
+                solutionURL: isDev ? config["our-solutions_dev"] : config["our-solutions_prod"],
+                chatbotURL: isDev ? config.chatbot_dev : config.chatbot_prod,
+                verificationURL: isDev ? config.verification_dev : config.verification_prod
+            };
+        }
+
         // View switching functionality
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async function() {
             const priceBotBtn = document.getElementById('priceBotBtn');
             const excelOpsBtn = document.getElementById('excelOpsBtn');
             const sampleFileContainer = document.getElementById('sampleFileContainer');
-
 
             function setActiveView(view) {
                 // Hide all info panels
@@ -285,29 +309,13 @@
             document.querySelector('button[onclick="togglePrivacyPanel()"]').classList.remove('active');
         }
 
-        function getBaseURLs() {
-            const isDev = window.location.hostname.includes("dev");
-            const baseLogin = isDev
-                ? "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/login?DomainPath=/dev-pricing-calculator"
-                : "https://www.bellblazetech.com/login?DomainPath=/pricing-calculator";
-
-            const baseSolution = isDev
-                ? "http://bellblaze-dev.s3-website.ap-south-1.amazonaws.com/products/our-solutions"
-                : "https://www.bellblazetech.com/our-solutions";
-
-            return {
-                loginURL: baseLogin,
-                solutionURL: baseSolution
-            };
-        }
-        const { loginURL, solutionURL } = getBaseURLs();
-
         // For token validation and user verification...
-        const UNIFIED_API_ENDPOINT = 'https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify';
         const MAX_RETRY_ATTEMPTS = 3;
         let retryCount = 0;
         // Check subscription status on page load
         document.addEventListener('DOMContentLoaded', async function () {
+            await loadConfig();
+            const { loginURL, solutionURL, verificationURL, chatbotURL} = getBaseURLs();
             // Check URL parameters first
             const urlParams = new URLSearchParams(window.location.search);
             const storedEmail = localStorage.getItem("useremail");
@@ -448,6 +456,7 @@
             const useremail = localStorage.getItem("useremail");
             console.log("verify user with useremail:", useremail);
             const provider_user_id = localStorage.getItem("provider_user_id");
+            const { verificationURL } = getBaseURLs();
             try {
                 // Prepare the request payload
                 const payload = {
@@ -461,7 +470,7 @@
                 if (provider_user_id && provider_user_id !== 'undefined') {
                     payload.provider_user_id = provider_user_id;
                 }
-                const response = await fetch(UNIFIED_API_ENDPOINT, {
+                const response = await fetch(verificationURL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -508,6 +517,8 @@
         async function verifysubscriptionWithDatabase() {
             const useremail = localStorage.getItem("useremail");
             const provider_user_id = localStorage.getItem("provider_user_id");
+            const { verificationURL } = getBaseURLs();
+            console.log("Verification URL:", verificationURL);
             try {
                 // Prepare the request payload
                 const payload = {
@@ -521,7 +532,7 @@
                 if (provider_user_id && provider_user_id !== 'undefined') {
                     payload.provider_user_id = provider_user_id;
                 }
-                const response = await fetch(UNIFIED_API_ENDPOINT, {
+                const response = await fetch(verificationURL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -606,7 +617,9 @@
                 data.isSubscribed ? 'none' : 'block';
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
+            await loadConfig();
+            const { loginURL, solutionURL, verificationURL } = getBaseURLs();
             updateUsageCounters();
         });
 
@@ -614,12 +627,23 @@
             // Clear all stored data
             localStorage.clear();
             clearFileList();
-
             // Redirect to the desired page
+            const { solutionURL } = getBaseURLs();
             window.location.href = solutionURL;
         }
     </script>
-    <script src="scripts/script.js"></script>
-    <script src="scripts/chat.js"></script>
+    <script>
+        (async () => {
+            await loadConfig(); // Load config.json first
+
+            const script1 = document.createElement('script');
+            script1.src = 'scripts/script.js';
+            document.body.appendChild(script1);
+
+            const script2 = document.createElement('script');
+            script2.src = 'scripts/chat.js';
+            document.body.appendChild(script2);
+        })();
+    </script>
 </body>
 </html>

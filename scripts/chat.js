@@ -1,3 +1,6 @@
+const { chatbotURL } = getBaseURLs();
+const CHATBOT_API_ENDPOINT = chatbotURL;
+
 let mergedEstimates = [];
 // Call it when the page loads
 document.addEventListener('DOMContentLoaded', function() {
@@ -151,7 +154,7 @@ async function sendMessage() {
         const payload = JSON.stringify({ body: JSON.stringify({ query: userInput }) });
 
         try {
-            let response = await fetch("https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/pricing-chatbot", {
+            let response = await fetch(CHATBOT_API_ENDPOINT, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: payload,

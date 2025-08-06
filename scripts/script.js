@@ -1,3 +1,6 @@
+const { verificationURL } = getBaseURLs();
+const UNIFIED_API_ENDPOINT = verificationURL;
+
 AWS.config.region = "ap-south-1"; // Change to your AWS region
 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
     IdentityPoolId: "ap-south-1:7a8263a8-c022-4670-9496-0beb10382c33"
