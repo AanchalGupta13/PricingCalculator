@@ -6,5 +6,7 @@
   "chatbot_dev": "https://wgnitr1p05.execute-api.ap-south-1.amazonaws.com/dev/pricing-chatbot",
   "chatbot_prod": "https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/pricing-chatbot",
   "verification_dev": "https://wgnitr1p05.execute-api.ap-south-1.amazonaws.com/dev/payment/verify",
-  "verification_prod": "https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify"
+  "verification_prod": "https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify",
+  "payment_dev": "https://hpuj4kzvj9.execute-api.ap-south-1.amazonaws.com/create-order",
+  "payment_prod": "https://hpuj4kzvj9.execute-api.ap-south-1.amazonaws.com/create-order"
 }

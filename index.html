@@ -18,7 +18,6 @@
                 try {
                     const response = await fetch("config.json");
                     config = await response.json();
-                    console.log("Config data:", config);
                     createSession(config);
                 } catch (error) {
                     showError("Failed to load config: " + error.message);
@@ -28,7 +27,6 @@
         });
 
         function createSession() {
-            console.log("Current URL:", window.location.href);
             const urlParams = new URLSearchParams(window.location.search);
             let token = urlParams.get('token');
             

@@ -183,7 +183,6 @@
                 const response = await fetch(`config.json?t=${new Date().getTime()}`);
                 if (!response.ok) throw new Error("Failed to load config.json");
                 window.appConfig = await response.json();
-                console.log("Loaded config:", window.appConfig);
             } catch (err) {
                 console.error("Error loading config:", err);
                 alert("Unable to load application config.");
@@ -518,7 +517,6 @@
             const useremail = localStorage.getItem("useremail");
             const provider_user_id = localStorage.getItem("provider_user_id");
             const { verificationURL } = getBaseURLs();
-            console.log("Verification URL:", verificationURL);
             try {
                 // Prepare the request payload
                 const payload = {
