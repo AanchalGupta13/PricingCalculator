@@ -196,7 +196,8 @@
                 loginURL: isDev ? config.loginURL_dev : config.loginURL_prod,
                 solutionURL: isDev ? config["our-solutions_dev"] : config["our-solutions_prod"],
                 chatbotURL: isDev ? config.chatbot_dev : config.chatbot_prod,
-                verificationURL: isDev ? config.verification_dev : config.verification_prod
+                verificationURL: isDev ? config.verification_dev : config.verification_prod,
+                bucketName: isDev ? config.bucket_dev : config.bucket_prod
             };
         }
 
@@ -332,7 +333,6 @@
                     }
                 }
             }
-            console.log("Page loaded - useremail:", storedEmail);
             // Redirect to login page if no token is found
             let token = localStorage.getItem("token");
             if (!token || token.trim() === "") {
@@ -368,8 +368,6 @@
 
             // Decode and parse
             const decodedPayload = JSON.parse(atob(paddedBase64));
-
-            console.log('Decoded Payload:', decodedPayload);
             try {
                 const username = decodedPayload.name;
                 const useremail = decodedPayload.email;
@@ -383,14 +381,8 @@
                 localStorage.setItem("username", username || 'User');
                 if (useremail && (localStorage.getItem('useremail') || !localStorage.getItem('useremail'))) {
                     localStorage.setItem('useremail', useremail);
-                    console.log("Successfully updated useremail:", useremail)
                 }
                 localStorage.setItem("provider_user_id", provider_user_id);
-
-                console.log(username);
-                console.log(useremail);
-                console.log(provider_user_id);
-
                 // Verify user against database
                 const isValidUser = await verifyUserWithDatabaseWithRetry();
 
@@ -453,7 +445,6 @@
 
         async function verifyUserWithDatabase() {
             const useremail = localStorage.getItem("useremail");
-            console.log("verify user with useremail:", useremail);
             const provider_user_id = localStorage.getItem("provider_user_id");
             const { verificationURL } = getBaseURLs();
             try {
@@ -477,14 +468,12 @@
                     },
                     body: JSON.stringify(payload)
                 });
-                console.log('received response:', response);
 
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
                 }
                 const data = await response.json();
-                console.log('Verification response', data);
                 return data.isValidUser;
             } catch (error) {
                 console.error('Error verifying user:', error);
@@ -537,7 +526,6 @@
                     },
                     body: JSON.stringify(payload)
                 });
-                console.log('received response:', response);
 
                 if (!response.ok) {
                     console.error('API Error Response:', await response.text());

@@ -1,15 +1,22 @@
-const { verificationURL } = getBaseURLs();
-const UNIFIED_API_ENDPOINT = verificationURL;
+let UNIFIED_API_ENDPOINT;
+let BUCKET_NAME;
+const s3 = new AWS.S3();
 
-AWS.config.region = "ap-south-1"; // Change to your AWS region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: "ap-south-1:7a8263a8-c022-4670-9496-0beb10382c33"
+window.addEventListener('load', () => {
+    const { verificationURL, bucketName } = getBaseURLs();
+    UNIFIED_API_ENDPOINT = verificationURL;
+    BUCKET_NAME = bucketName;
+    AWS.config.region = "ap-south-1";
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: "ap-south-1:7a8263a8-c022-4670-9496-0beb10382c33"
+    });
+
+    updateUsageCounters(); // now runs after config is ready
 });
 
 let fileListInterval = null;
 let sessionStartTime = new Date(); // Track when the session started
 let lastUploadTime = null; // Track when the last upload occurred
-
 let selectedFile = null;
 let processingInterval = null;
 const PROCESSING_CHECK_INTERVAL = 3000;
@@ -114,8 +121,6 @@ async function updateUsageCounters() {
     }
 } 
 
-const s3 = new AWS.S3();
-const BUCKET_NAME = "price--inventory";
 let previousFileList = []; // Store previous file list to track changes
 let processingStarted = false; // Flag to track if processing has started
 let uploadedFilename = ""; // Used to track original upload

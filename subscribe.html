@@ -100,11 +100,7 @@
                 document.getElementById('phone').focus();
                 return;
             }
-
-            console.log("Before storage - email:", email); // Debug what's being stored
             localStorage.setItem("useremail", email);  // Update localStorage with the new valid email
-            console.log("After storage - retrieved:", localStorage.getItem("useremail")); // Debug what was stored
-
             // If all validations pass, proceed to payment
             subscribeNow(name, email, phone);
         }
@@ -112,7 +108,6 @@
         // Email validation helper 
         function isValidEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            console.log("email:", email);
             return re.test(email);
         }
 
@@ -148,7 +143,6 @@
                     console.error("Invalid response from API:", data);
                     return;
                 }
-                console.log("data: ", data)
 
                 const rzp = new Razorpay({
                     key: data.key,
@@ -164,7 +158,6 @@
                     },
                     handler: async function (response) {
                         try {
-                            console.log("response: ", response);
                             const verificationSuccess = await processPayment({
                                 paymentId: response.razorpay_payment_id,
                                 name,
@@ -212,7 +205,6 @@
                 if (paymentData.provider_user_id && paymentData.provider_user_id !== 'undefined') {
                     payload.provider_user_id = paymentData.provider_user_id;
                 }
-                console.log("Sending payment data:", payload);
                 const response = await fetch(verificationURL, {
                     method: 'POST',
                     headers: {
@@ -220,8 +212,6 @@
                     },
                     body: JSON.stringify(payload)
                 });
-                console.log("response status:",response.status);
-                console.log("response: ", response);
 
                 if (!response.ok) {
                     const errorText = await response.text();
@@ -230,7 +220,6 @@
                 }
 
                 const responseData = await response.json();
-                console.log("Lambda response data:", responseData);
                 
                 if (responseData.success) {
                     localStorage.setItem("payment_processed", "true");

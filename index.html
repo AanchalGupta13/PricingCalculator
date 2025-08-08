@@ -37,7 +37,6 @@
 
             // Clean token if it contains URL parameters
             token = cleanToken(token);
-            console.log("Cleaned Token:", token);
 
             if (!isValidToken(token)) {
                 showError("Invalid token format");

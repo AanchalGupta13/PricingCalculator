@@ -8,5 +8,7 @@
   "verification_dev": "https://wgnitr1p05.execute-api.ap-south-1.amazonaws.com/dev/payment/verify",
   "verification_prod": "https://wncxw70jjc.execute-api.ap-south-1.amazonaws.com/prod/payment/verify",
   "payment_dev": "https://hpuj4kzvj9.execute-api.ap-south-1.amazonaws.com/create-order",
-  "payment_prod": "https://hpuj4kzvj9.execute-api.ap-south-1.amazonaws.com/create-order"
+  "payment_prod": "https://hpuj4kzvj9.execute-api.ap-south-1.amazonaws.com/create-order",
+  "bucket_dev": "price-inventory-dev",
+  "bucket_prod": "price-inventory"
 }
